@@ -1,0 +1,18 @@
+SELECT C.CustomerId, C.CustomerName 
+FROM	dbo.Customer as C, dbo.Purchase AS PH
+WHERE NOT EXISTS(
+		SELECT *
+		FROM	dbo.Product as P
+		WHERE NOT EXISTS
+		(
+			SELECT *
+			FROM
+				dbo.Purchase as PU
+			WHERE
+				PU.CustomerID = C.CustomerID
+				AND PU.ProductID = P.ProductId
+		)
+)
+AND C.CustomerId = PH.CustomerId
+GROUP BY C.CustomerName, C.CustomerId
+HAVING SUM(PH.Qty) > 50
